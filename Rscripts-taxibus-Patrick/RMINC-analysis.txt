@@ -1,0 +1,114 @@
+To start R
+/projects/mice/share/arch/linux64/hardy-apps/bin/R
+
+library(RMINC)
+gf <- read.csv("~/Documents/taxi-bus-experiment/image-mouse-day-spreadsheet.csv")
+history()
+history(200)
+?history
+names(gf)
+gf$Image
+gf$bname <- sub('.mnc', '', gf$Image)
+gf$bname
+system(paste("ls ", "/projects/souris/psteadman/in-vivo-buildmodel/in-vivo-plbase/invivo-1jul10_processed/", gf$bname[i], "/stats-volumes", sep=""))
+i <- 1
+system(paste("ls ", "/projects/souris/psteadman/in-vivo-buildmodel/in-vivo-plbase/invivo-1jul10_processed/", gf$bname[i], "/stats-volumes", sep=""))
+system(paste("ls ", "/projects/souris/psteadman/in-vivo-buildmodel/in-vivo-plbase/invivo-1jul10_processed/", gf$bname[i], "/stats-volumes/*log-determinant-fw
+hm0.5.mnc", sep=""))
+system(paste("ls ", "/projects/souris/psteadman/in-vivo-buildmodel/in-vivo-plbase/invivo-1jul10_processed/", gf$bname[i], "/stats-volumes/*log-determinant-fw
+hm0.5.mnc", sep=""), intern=T)
+gf$jacobians <- 0
+for (i in 1:nrow(gf)) {
+gf$jacobians[i] <- system(paste("ls ", "/projects/souris/psteadman/in-vivo-buildmodel/in-vivo-plbase/invivo-1jul10_processed/", gf$bname[i], "/stats-volumes/
+*log-determinant-fwhm0.5.mnc", sep=""), intern=T)
+}
+gf$jacobians
+gf$Day
+gf$condition
+gf$Condition
+taxi.vs <- mincLm(jacobians ~ Day, Condition=="t", gf)
+taxi.vs <- mincLm(jacobians ~ Day, subset=Condition=="t", gf)
+taxi.vs
+mincWriteVolume(taxi.vs, "taxi-against-day.mnc", 3)
+hc.v <- mincGetVoxel(gf$jacobians, 42, 66, 27)
+library(ggplot2)
+qplot(Day, exp(hc.v), data=gf2, colour=Condition)
+qplot(Day, exp(hc.v), data=gf, colour=Condition)
+qplot(Day, exp(hc.v), data=gf, colour=Condition, geom=c("point", "smooth"))
+qplot(Day, exp(hc.v), data=gf, colour=Condition, geom=c("point", "smooth"), method="lm")
+hc.v <- mincGetVoxel(gf$jacobians, 42, 61, 23)
+qplot(Day, exp(hc.v), data=gf, colour=Condition, geom=c("point", "smooth"), method="lm")
+gf
+qplot(Day, exp(hc.v), data=gf, colour=Condition, geom=c("point", "smooth"), method="lm") + geom_line(aes(Group=Mouse..))
+qplot(Day, exp(hc.v), data=gf, colour=Condition, geom=c("point", "smooth"), method="lm")
+qplot(Day, exp(hc.v), data=gf, colour=Condition, geom=c("point", "smooth"), method="lm") + geom_line(aes(Group=Mouse..)) + facet_grid(.~Condition)
+qplot(Day, exp(hc.v), data=gf, colour=Condition, geom=c("point", "smooth"), method="lm") + geom_line(aes(Group=Mouse.., colour=Mouse..)) + facet_grid(.~Condition)
+names(gf)
+qplot(Day, exp(hc.v), data=gf, colour=Condition, geom=c("point", "smooth"), method="lm") + geom_line(aes(Group=Mouse.., colour=Mouse..)) + facet_grid(Leant.taxl~Condition)
+qplot(Day, exp(hc.v), data=gf, colour=Condition, geom=c("point", "smooth"), method="lm") + geom_line(aes(Group=Mouse.., colour=Mouse..)) + facet_grid(Leant.task~Condition)
+qplot(Day, exp(hc.v), data=gf, colour=Condition, geom=c("point", "smooth"), method="lm") + geom_line(aes(Group=Mouse.., colour=Mouse..)) + facet_grid(Learnt.task~Condition)
+hc.v <- mincGetVoxel(gf$jacobians, 51, 65, 65)
+qplot(Day, exp(hc.v), data=gf, colour=Condition, geom=c("point", "smooth"), method="lm") + geom_line(aes(Group=Mouse.., colour=Mouse..)) + facet_grid(.~Condition)
+qplot(Day, exp(hc.v), data=gf, colour=Condition, geom=c("point", "smooth"), method="lm") + geom_line(aes(Group=Mouse.., colour=Mouse..)) + facet_grid(Learnt.task~Condition)
+summary(lm(hc.v ~ Day, subset=Condition=="t", gf))
+summary(lm(hc.v ~ Day, subset=Condition=="t"&Learnt.task=1, gf))
+summary(lm(hc.v ~ Day, subset=Condition=="t" & Learnt.task=1, gf))
+summary(lm(hc.v ~ Day, subset=Condition=="t" & Learnt.task==1, gf))
+summary(lm(hc.v ~ Day*Condition, gf))
+gf$Condition
+gf$Condition <- relevel(ref="c")
+gf$Condition <- relevel(gf$Condition, ref="c")
+summary(lm(hc.v ~ Day*Condition, gf))
+summary(lm(hc.v ~ I(Day-5)*Condition, gf))
+library(nlme)
+summary(lme(hc.v ~ I(Day-5)*Condition, gf, random=~1|Mouse..))
+?lme
+summary(lme(hc.v ~ I(Day-5)*Condition, gf, random=~1|Mouse..), na.action="na.rm")
+summary(lme(hc.v ~ I(Day-5)*Condition, gf, random=~1|Mouse.., na.action="na.rm"))
+summary(lme(hc.v ~ I(Day-5)*Condition, gf, random=~1|Mouse.., na.action="na.omit"))
+bus.vs <- mincLm(jacobians ~ Day, Condition=="b", gf)
+bus.vs <- mincLm(jacobians ~ Day, subset=Condition=="b", gf)
+mincWriteVolume(bus.vs, "bus-against-day.mnc", 3)
+st.v <- mincGetVoxel(gf$jacobians, 32, 84, 73)
+qplot(Day, exp(st.v), data=gf, colour=Condition, geom=c("point", "smooth"), method="lm") + geom_line(aes(Group=Mouse.., colour=Mouse..)) + facet_grid(Learnt.task~Condition)
+summary(lme(st.v ~ I(Day-5)*Condition, gf, random=~1|Mouse.., na.action="na.omit"))
+bus.vs <- mincLm(jacobians ~ Day, subset=Condition=="b" & Day < 5, gf)
+mincWriteVolume(bus.vs, "bus-against-day-to-day5.mnc", 3)
+taxi.vs <- mincLm(jacobians ~ Day, subset=Condition=="t" & Day < 5, gf)
+mincWriteVolume(taxi.vs, "taxi-against-day-to-day5.mnc", 3)
+history(200)
+
+gf
+list.files("/projects/souris/psteadman/in-vivo-buildmodel/in-vivo-plbase/invivo-1jul10_processed/img_25may10.1/stats-volumes/")
+gf$jacobians
+list.files("/projects/souris/psteadman/in-vivo-buildmodel/in-vivo-plbase/invivo-1jul10_processed/img_25may10.1/stats-volumes/")
+sub('log-determinant-fwhm0.5.mnc', 'log-determinant-scaled-fwhm0.1.mnc', gf$jacobians)
+gf$smallJacobians <- sub('log-determinant-fwhm0.5.mnc', 'log-determinant-scaled-fwhm0.1.mnc', gf$jacobians)
+library(RMINC)
+allvols <- anatGetAll(gf$smallJacobians, "../atlas-transform/jul1nlin5atlas.mnc")
+allvols <- anatGetAll(gf$smallJacobians, "../atlas-transform/jul1nlin5atlas.mnc")
+allvols
+vols <- anatCombineStructures(allvols)
+vols
+library(ggplot2)
+names(gf)
+qplot(Day, vols[,"hippocampus"], geom="point", colour=Condition")
+qplot(Day, vols[,"hippocampus"], geom="point", colour="Condition")
+qplot(Day, vols[,"hippocampus"], geom="point", colour="Condition", data=gf)
+qplot(Day, vols[,"hippocampus"], geom="point", colour=Condition, data=gf)
+qplot(Day, vols[,"hippocampus"], geom=c("point", "smooth"), colour=Condition, data=gf)
+qplot(Day, vols[,"hippocampus"], geom=c("point", "smooth"), colour=Condition, data=gf, method="lm")
+qplot(Day, vols[,"striatum"], geom=c("point", "smooth"), colour=Condition, data=gf, method="lm")
+colSums(vols)
+rowSums(vols)
+brainVolume <- rowSums(vols)
+qplot(Day, brainVolume, geom=c("point", "smooth"), colour=Condition, data=gf, method="lm")
+qplot(as.factor(Day), brainVolume, geom=c("boxplot"), colour=Condition, data=gf, method="lm")
+qplot(as.factor(Day), vols[,"hippocampus"], geom=c("boxplot"), colour=Condition, data=gf, method="lm")
+qplot(as.factor(Day), vols[,"hippocampus"]/brainVolume, geom=c("boxplot"), colour=Condition, data=gf, method="lm")
+qplot(as.factor(Day), vols[,"striatum"]/brainVolume, geom=c("boxplot"), colour=Condition, data=gf, method="lm")
+qplot(as.factor(Day), vols[,"striatum"]/brainVolume, geom=c("boxplot", "point"), colour=Condition, data=gf, method="lm")
+qplot(as.factor(Day), vols[,"hippocampus"]/brainVolume, geom=c("boxplot"), colour=Condition, data=gf, method="lm")
+ftable(gf$Condition, gf$Day)
+history(40)
+
